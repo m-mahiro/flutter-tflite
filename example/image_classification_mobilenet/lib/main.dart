@@ -18,6 +18,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image_classification_mobilenet/ui/jannkenn.dart';
 
 import 'ui/camera.dart';
 import 'ui/gallery.dart';
@@ -65,7 +66,9 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
     if (cameraIsAvailable) {
       // get list available camera
       cameraDescription = (await availableCameras()).last;
-      _widgetOptions!.add(CameraScreen(camera: cameraDescription));
+      _widgetOptions!
+        ..add(CameraScreen(camera: cameraDescription))
+        ..add(JannkennScreen(camera: cameraDescription));
     }
 
     setState(() {});
@@ -101,6 +104,10 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
             icon: Icon(Icons.camera),
             label: 'Live Camera',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.waving_hand),
+            label: 'Jannkenn',
+          )
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],

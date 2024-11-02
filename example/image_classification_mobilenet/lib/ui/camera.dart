@@ -20,12 +20,12 @@ import 'package:flutter/material.dart';
 import 'package:image_classification_mobilenet/helper/image_classification_helper.dart';
 
 class CameraScreen extends StatefulWidget {
+  final CameraDescription camera;
+
   const CameraScreen({
     super.key,
     required this.camera,
   });
-
-  final CameraDescription camera;
 
   @override
   State<StatefulWidget> createState() => CameraScreenState();
@@ -71,7 +71,7 @@ class CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver 
   }
 
   // init camera
-  initCamera() {
+  void initCamera() {
     cameraController = CameraController(widget.camera, ResolutionPreset.medium,
         imageFormatGroup: Platform.isIOS
             ? ImageFormatGroup.bgra8888
