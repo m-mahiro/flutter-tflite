@@ -78,8 +78,6 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
     if (mounted) {
       setState(() {});
     }
-  }
-
 
   Widget cameraWidget(context) {
     var camera = cameraController.value;
