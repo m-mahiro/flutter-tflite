@@ -26,7 +26,7 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'isolate_inference.dart';
 
 class ImageClassificationHelper {
-  static const modelPath = 'assets/models/mobilenet_quant.tflite';
+  static const modelPath = 'assets/models/model.tflite';
   static const labelsPath = 'assets/models/labels.txt';
 
   late final Interpreter interpreter;
@@ -57,7 +57,7 @@ class ImageClassificationHelper {
 
     // Load model from assets
     interpreter = await Interpreter.fromAsset(modelPath, options: options);
-    // Get tensor input shape [1, 224, 224, 3]
+    // Get tensor input shape [1, 224, 224, 3]w
     inputTensor = interpreter.getInputTensors().first;
     // Get tensor output shape [1, 1001]
     outputTensor = interpreter.getOutputTensors().first;
