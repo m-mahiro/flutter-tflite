@@ -42,6 +42,12 @@ class _GalleryScreenState extends State<GalleryScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    imageClassificationHelper?.close();
+    super.dispose();
+  }
+
   // Clean old results when press some take picture button
   void cleanResult() {
     imagePath = null;
@@ -65,12 +71,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   @override
-  void dispose() {
-    imageClassificationHelper?.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
@@ -85,7 +85,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     final result = await imagePicker.pickImage(
                       source: ImageSource.camera,
                     );
-
                     imagePath = result?.path;
                     setState(() {});
                     processImage();
@@ -102,7 +101,6 @@ class _GalleryScreenState extends State<GalleryScreen> {
                   final result = await imagePicker.pickImage(
                     source: ImageSource.gallery,
                   );
-
                   imagePath = result?.path;
                   setState(() {});
                   processImage();
@@ -116,37 +114,44 @@ class _GalleryScreenState extends State<GalleryScreen> {
             ],
           ),
           const Divider(color: Colors.black),
-          Expanded(
-              child: Stack(
+          Expanded(child: Stack(
             alignment: Alignment.center,
             children: [
               if (imagePath != null) Image.file(File(imagePath!)),
               if (image == null)
-                const Text("Take a photo or choose one from the gallery to "
-                    "inference."),
+                const Text("Take a photo or choose one from the gallery to inference."),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(),
-                  if (image != null) ...[
-                    // Show model information
-                    if (imageClassificationHelper?.inputTensor != null)
-                      Text(
-                        'Input: (shape: ${imageClassificationHelper?.inputTensor.shape} type: '
-                        '${imageClassificationHelper?.inputTensor.type})',
-                      ),
-                    if (imageClassificationHelper?.outputTensor != null)
-                      Text(
-                        'Output: (shape: ${imageClassificationHelper?.outputTensor.shape} '
-                        'type: ${imageClassificationHelper?.outputTensor.type})',
-                      ),
-                    const SizedBox(height: 8),
-                    // Show picked image information
-                    Text('Num channels: ${image?.numChannels}'),
-                    Text('Bits per channel: ${image?.bitsPerChannel}'),
-                    Text('Height: ${image?.height}'),
-                    Text('Width: ${image?.width}'),
-                  ],
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (image != null) ...[
+                          // Show model information
+                          if (imageClassificationHelper?.inputTensor != null)
+                            Text(
+                              'Input: (shape: ${imageClassificationHelper?.inputTensor.shape} type: '
+                                  '${imageClassificationHelper?.inputTensor.type})',
+                            ),
+                          if (imageClassificationHelper?.outputTensor != null)
+                            Text(
+                              'Output: (shape: ${imageClassificationHelper?.outputTensor.shape} '
+                                  'type: ${imageClassificationHelper?.outputTensor.type})',
+                            ),
+                          const SizedBox(height: 8),
+                          // Show picked image information
+                          Text('Num channels: ${image?.numChannels}'),
+                          Text('Bits per channel: ${image?.bitsPerChannel}'),
+                          Text('Height: ${image?.height}'),
+                          Text('Width: ${image?.width}'),
+                        ],
+                      ],
+                    ),
+                  ),
                   const Spacer(),
                   // Show classification result
                   SingleChildScrollView(

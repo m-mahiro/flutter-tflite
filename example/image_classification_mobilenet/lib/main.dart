@@ -64,7 +64,7 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
 
     if (cameraIsAvailable) {
       // get list available camera
-      cameraDescription = (await availableCameras()).first;
+      cameraDescription = (await availableCameras()).last;
       _widgetOptions!.add(CameraScreen(camera: cameraDescription));
     }
 

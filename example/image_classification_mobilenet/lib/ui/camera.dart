@@ -31,39 +31,12 @@ class CameraScreen extends StatefulWidget {
   State<StatefulWidget> createState() => CameraScreenState();
 }
 
-class CameraScreenState extends State<CameraScreen>
-    with WidgetsBindingObserver {
+
+class CameraScreenState extends State<CameraScreen> with WidgetsBindingObserver {
   late CameraController cameraController;
   late ImageClassificationHelper imageClassificationHelper;
   Map<String, double>? classification;
   bool _isProcessing = false;
-
-  // init camera
-  initCamera() {
-    cameraController = CameraController(widget.camera, ResolutionPreset.medium,
-        imageFormatGroup: Platform.isIOS
-            ? ImageFormatGroup.bgra8888
-            : ImageFormatGroup.yuv420);
-    cameraController.initialize().then((value) {
-      cameraController.startImageStream(imageAnalysis);
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  Future<void> imageAnalysis(CameraImage cameraImage) async {
-    // if image is still analyze, skip this frame
-    if (_isProcessing) {
-      return;
-    }
-    _isProcessing = true;
-    classification = await imageClassificationHelper.inferenceCameraFrame(cameraImage);
-    _isProcessing = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   @override
   void initState() {
@@ -96,6 +69,34 @@ class CameraScreenState extends State<CameraScreen>
     imageClassificationHelper.close();
     super.dispose();
   }
+
+  // init camera
+  initCamera() {
+    cameraController = CameraController(widget.camera, ResolutionPreset.medium,
+        imageFormatGroup: Platform.isIOS
+            ? ImageFormatGroup.bgra8888
+            : ImageFormatGroup.yuv420);
+    cameraController.initialize().then((value) {
+      cameraController.startImageStream(imageAnalysis);
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  Future<void> imageAnalysis(CameraImage cameraImage) async {
+    // if image is still analyze, skip this frame
+    if (_isProcessing) {
+      return;
+    }
+    _isProcessing = true;
+    classification = await imageClassificationHelper.inferenceCameraFrame(cameraImage);
+    _isProcessing = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
 
   Widget cameraWidget(context) {
     var camera = cameraController.value;

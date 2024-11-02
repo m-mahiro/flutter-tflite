@@ -40,6 +40,7 @@ class IsolateInference {
     _receivePort.close();
   }
 
+  ///Isolate側の処理。ここで推論を行う。
   static void entryPoint(SendPort sendPort) async {
     final port = ReceivePort();
     sendPort.send(port.sendPort);
@@ -87,11 +88,8 @@ class IsolateInference {
       // Set classification map {label: points}
       var classification = <String, double>{};
       for (var i = 0; i < result.length; i++) {
-        if (result[i] != 0) {
-          // Set label: points
-          classification[isolateModel.labels[i]] =
-              result[i].toDouble() / maxScore.toDouble();
-        }
+        classification[isolateModel.labels[i]]
+          = result[i].toDouble() / maxScore.toDouble();
       }
       isolateModel.responsePort.send(classification);
     }

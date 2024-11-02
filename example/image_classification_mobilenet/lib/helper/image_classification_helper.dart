@@ -35,6 +35,14 @@ class ImageClassificationHelper {
   late Tensor inputTensor;
   late Tensor outputTensor;
 
+
+  Future<void> initHelper() async {
+    _loadLabels();
+    _loadModel();
+    isolateInference = IsolateInference();
+    await isolateInference.start();
+  }
+
   // Load model
   Future<void> _loadModel() async {
     final options = InterpreterOptions();
@@ -57,7 +65,7 @@ class ImageClassificationHelper {
 
     // Load model from assets
     interpreter = await Interpreter.fromAsset(modelPath, options: options);
-    // Get tensor input shape [1, 224, 224, 3]w
+    // Get tensor input shape [1, 224, 224, 3]
     inputTensor = interpreter.getInputTensors().first;
     // Get tensor output shape [1, 1001]
     outputTensor = interpreter.getOutputTensors().first;
@@ -69,21 +77,6 @@ class ImageClassificationHelper {
   Future<void> _loadLabels() async {
     final labelTxt = await rootBundle.loadString(labelsPath);
     labels = labelTxt.split('\n');
-  }
-
-  Future<void> initHelper() async {
-    _loadLabels();
-    _loadModel();
-    isolateInference = IsolateInference();
-    await isolateInference.start();
-  }
-
-  Future<Map<String, double>> _inference(InferenceModel inferenceModel) async {
-    ReceivePort responsePort = ReceivePort();
-    isolateInference.sendPort.send(inferenceModel..responsePort = responsePort.sendPort);
-    // get inference result.
-    var results = await responsePort.first;
-    return results;
   }
 
   // inference camera frame
@@ -101,12 +94,27 @@ class ImageClassificationHelper {
 
   // inference still image
   Future<Map<String, double>> inferenceImage(Image image) async {
-    var isolateModel = InferenceModel(null, image, interpreter.address, labels,
-        inputTensor.shape, outputTensor.shape);
+    var isolateModel = InferenceModel(
+      null,
+      image,
+      interpreter.address,
+      labels,
+      inputTensor.shape,
+      outputTensor.shape
+    );
     return _inference(isolateModel);
   }
 
   Future<void> close() async {
     isolateInference.close();
   }
+
+  Future<Map<String, double>> _inference(InferenceModel inferenceModel) async {
+    ReceivePort responsePort = ReceivePort();
+    isolateInference.sendPort.send(inferenceModel..responsePort = responsePort.sendPort);
+    // get inference result.
+    var results = await responsePort.first;
+    return results;
+  }
+
 }
