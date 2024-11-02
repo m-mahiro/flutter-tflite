@@ -58,8 +58,7 @@ class CameraScreenState extends State<CameraScreen>
       return;
     }
     _isProcessing = true;
-    classification =
-        await imageClassificationHelper.inferenceCameraFrame(cameraImage);
+    classification = await imageClassificationHelper.inferenceCameraFrame(cameraImage);
     _isProcessing = false;
     if (mounted) {
       setState(() {});
@@ -127,9 +126,9 @@ class CameraScreenState extends State<CameraScreen>
 
     list.add(
       SizedBox(
-        child: (!cameraController.value.isInitialized)
-            ? Container()
-            : cameraWidget(context),
+        child: (cameraController.value.isInitialized)
+            ? cameraWidget(context)
+            : Container(),
       ),
     );
     list.add(Align(

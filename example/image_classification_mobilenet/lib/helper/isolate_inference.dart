@@ -78,9 +78,8 @@ class IsolateInference {
       final input = [imageMatrix];
       // Set tensor output [1, 1001]
       final output = [List<int>.filled(isolateModel.outputShape[1], 0)];
-      // // Run inference
-      Interpreter interpreter =
-          Interpreter.fromAddress(isolateModel.interpreterAddress);
+      // Run inference
+      Interpreter interpreter = Interpreter.fromAddress(isolateModel.interpreterAddress);
       interpreter.run(input, output);
       // Get first output tensor
       final result = output.first;
