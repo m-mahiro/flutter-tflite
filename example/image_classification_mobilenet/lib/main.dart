@@ -88,8 +88,10 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset('assets/images/tfl_logo.png'),
-        backgroundColor: Colors.black.withOpacity(0.5),
+        // title: Image.asset('assets/images/tfl_logo.png'),
+        // title: Image.asset('assets/images/jannkenn_log.png'),
+        // backgroundColor: Colors.black.withOpacity(0.5),
+        title: const Center(child: Text('じゃんけんアプリ')),
       ),
       body: Center(
         child: _widgetOptions?.elementAt(_selectedIndex),

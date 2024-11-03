@@ -1,4 +1,4 @@
-Rock
-Scissor
-Paper
-Neutral
+ぐー
+ちょき
+ぱー
+なにもなし

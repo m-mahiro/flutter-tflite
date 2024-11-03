@@ -24,7 +24,6 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.0
   build_runner: ^2.4.4
-  flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
@@ -33,7 +32,7 @@ flutter:
     - assets/models/
 
 flutter_launcher_icons:
-  image_path: "assets/images/logo.png"
+  image_path: "assets/images/tfl_logo.png"
   android: "ic_launcher"
   ios: true
   remove_alpha_ios: true

@@ -16,11 +16,22 @@ class JannkennScreen extends StatefulWidget {
 class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObserver {
   late CameraController cameraController;
   late ImageClassificationHelper imageClassificationHelper;
-  String message = '最初はグー！';
+  String jannkennMessage = '最初はグー！';
+  String buttonMessage = 'Play Jannkenn!';
   Map<String, double>? classification;
   bool _isProcessing = false;
   bool _isPlaying = false;
+  bool _doAnalysis = false;
+  // bool _showDetail = true;
 
+  String path_rock = 'assets/images/janken_gu.png';
+  String path_scissor = 'assets/images/janken_choki.png';
+  String path_paper = 'assets/images/janken_pa.png';
+  String path_rock_shadow = 'assets/images/janken_gu_shadow.png';
+  String path_hand_asset = '';
+
+  String opponentHand = '';
+  List<MapEntry<String, double>> battleClassification = [];
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -69,7 +80,7 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
 
   Future<void> imageAnalysis(CameraImage cameraImage) async {
     // if image is still analyze, skip this frame
-    if (_isProcessing) {
+    if (_isProcessing || !_doAnalysis) {
       return;
     }
     _isProcessing = true;
@@ -78,6 +89,7 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
     if (mounted) {
       setState(() {});
     }
+  }
 
   Widget cameraWidget(context) {
     var camera = cameraController.value;
@@ -101,47 +113,142 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
     );
   }
 
-  void changeMessage() async {
-    await Future.delayed(const Duration(seconds: 2));
+
+   void startJannkenn() async {
     setState(() {
-      message = 'じゃんけん！';
+      battleClassification = [];
+      _isPlaying = true;
+      _doAnalysis = true;
+      jannkennMessage = '最初は';
+      buttonMessage = 'おわる';
+      path_hand_asset = path_rock_shadow;
     });
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!_isPlaying) return;
+
+    setState(() {
+      jannkennMessage = 'ぐー！';
+      path_hand_asset = path_rock;
+    });
+    await Future.delayed(const Duration(milliseconds: 500));
+    if(!_isPlaying) return;
+
+    setState(() {
+      jannkennMessage = 'じゃんけん！';
+      path_hand_asset = path_rock_shadow;
+    });
+    await Future.delayed(const Duration(milliseconds: 500));
+    if(!_isPlaying) return;
+
+    if (classification != null) {
+      battleClassification = classification!.entries.toList();
+      battleClassification.sort((a, b) => a.value.compareTo(b.value));
+      opponentHand = battleClassification[battleClassification.length - 1].key;
+      if(opponentHand == 'なにもなし') {
+        opponentHand = battleClassification[battleClassification.length - 2].key;
+      }
+    }
+    switch(opponentHand) {
+      case 'ぐー': path_hand_asset = path_paper;
+      case 'ちょき': path_hand_asset = path_rock;
+      case 'ぱー': path_hand_asset = path_scissor;
+      default: path_hand_asset = path_rock_shadow;
+    }
+
+     setState(() {
+      jannkennMessage = 'ぽん！';
+      _doAnalysis = false;
+      buttonMessage = 'もういっかい！';
+    });
+
   }
 
-  void startJannkenn() {
+  void terminateJannkenn() {
     setState(() {
-      _isPlaying = true;
+      _isPlaying = false;
+      _doAnalysis = false;
+      battleClassification = [];
     });
-    changeMessage();
   }
 
   @override
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
     List<Widget> list = [];
-
+    
     list.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: SizedBox(
-              height: 100,
-              child: (cameraController.value.isInitialized)
-                  ? cameraWidget(context)
-                  : Container(),
-            ),
-          ),
-        ],
+      Center(
+        child: _isPlaying ?
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(path_hand_asset),
+                Text(jannkennMessage,
+                  style: const TextStyle(fontSize: 30),),
+              ],
+            )
+            : const Text("T下のボタンをタップしてね！！"),
       ),
     );
+    list.add(
+      Align(
+        alignment: Alignment.topCenter,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if (battleClassification != null && _isPlaying)
+                      ...(battleClassification..sort(
+                              (a, b) => a.value.compareTo(b.value),
+                        ))
+                          .reversed
+                          .take(3)
+                          .map(
+                            (e) => Container(
+                          padding: const EdgeInsets.all(8),
+                          color: Colors.white,
+                          child: Row(
+                            children: [
+                              Text(e.key),
+                              const Spacer(),
+                              Text(e.value.toStringAsFixed(2))
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 20,),
+            Padding(
+              padding: const EdgeInsets.only(top: 25),
+              child: SizedBox(
+                height: 120,
+                child: (cameraController.value.isInitialized)
+                    ? cameraWidget(context)
+                    : Container(),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     list.add(Align(
       alignment: Alignment.bottomCenter,
-      child: Center(
-        child: !_isPlaying ?
-          TextButton(onPressed: startJannkenn, child: const Text('Start Jannkenn!'))
-          : Text(message),
+      child: Column(
+        children: <Widget>[
+          const Spacer(),
+          ElevatedButton(
+            onPressed: _isPlaying ? terminateJannkenn : startJannkenn,
+            child: Text(_isPlaying ? buttonMessage : 'スタート'),
+          ),
+          const SizedBox(height: 40,),
+        ],
       )
     ));
 
