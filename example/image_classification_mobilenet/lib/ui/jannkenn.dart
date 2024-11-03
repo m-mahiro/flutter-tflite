@@ -123,21 +123,21 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
       buttonMessage = 'おわる';
       path_hand_asset = path_rock_shadow;
     });
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if (!_isPlaying) return;
 
     setState(() {
       jannkennMessage = 'ぐー！';
       path_hand_asset = path_rock;
     });
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if(!_isPlaying) return;
 
     setState(() {
       jannkennMessage = 'じゃんけん！';
       path_hand_asset = path_rock_shadow;
     });
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     if(!_isPlaying) return;
 
     if (classification != null) {
@@ -149,9 +149,9 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
       }
     }
     switch(opponentHand) {
-      case 'ぐー': path_hand_asset = path_paper;
-      case 'ちょき': path_hand_asset = path_rock;
-      case 'ぱー': path_hand_asset = path_scissor;
+      case 'ぐー': path_hand_asset = path_scissor;
+      case 'ちょき': path_hand_asset = path_paper;
+      case 'ぱー': path_hand_asset = path_rock;
       default: path_hand_asset = path_rock_shadow;
     }
 
