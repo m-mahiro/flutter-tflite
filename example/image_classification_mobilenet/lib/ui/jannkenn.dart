@@ -155,6 +155,7 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
       default: path_hand_asset = path_rock_shadow;
     }
 
+
      setState(() {
       jannkennMessage = 'ぽん！';
       _doAnalysis = false;
@@ -187,7 +188,7 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
                   style: const TextStyle(fontSize: 30),),
               ],
             )
-            : const Text("T下のボタンをタップしてね！！"),
+            : const Text("下のボタンをタップしてね！！"),
       ),
     );
     list.add(
@@ -196,6 +197,16 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 25),
+              child: SizedBox(
+                height: 120,
+                child: (cameraController.value.isInitialized)
+                    ? cameraWidget(context)
+                    : Container(),
+              ),
+            ),
+            SizedBox(width: 20,),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -221,16 +232,6 @@ class _JannkennScreenState extends State<JannkennScreen> with WidgetsBindingObse
                       ),
                   ],
                 ),
-              ),
-            ),
-            SizedBox(width: 20,),
-            Padding(
-              padding: const EdgeInsets.only(top: 25),
-              child: SizedBox(
-                height: 120,
-                child: (cameraController.value.isInitialized)
-                    ? cameraWidget(context)
-                    : Container(),
               ),
             ),
           ],

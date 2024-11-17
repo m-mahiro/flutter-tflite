@@ -91,7 +91,7 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
         // title: Image.asset('assets/images/tfl_logo.png'),
         // title: Image.asset('assets/images/jannkenn_log.png'),
         // backgroundColor: Colors.black.withOpacity(0.5),
-        title: const Center(child: Text('じゃんけんアプリ')),
+        title: const Center(child: Text('多分負けてくれるアプリ')),
       ),
       body: Center(
         child: _widgetOptions?.elementAt(_selectedIndex),
@@ -100,16 +100,17 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.image),
-            label: 'Gallery screen',
+            label: '写真を選ぶ',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.camera),
-            label: 'Live Camera',
+            label: 'ライブカメラ',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.waving_hand),
-            label: 'Jannkenn',
-          )
+            label: 'じゃんけん',
+          ),
+
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],

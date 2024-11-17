@@ -93,7 +93,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     Icons.camera,
                     size: 48,
                   ),
-                  label: const Text("Take a photo"),
+                  label: const Text("写真を撮る"),
                 ),
               TextButton.icon(
                 onPressed: () async {
@@ -109,7 +109,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                   Icons.photo,
                   size: 48,
                 ),
-                label: const Text("Pick from gallery"),
+                label: const Text("写真を選ぶ"),
               ),
             ],
           ),
@@ -119,7 +119,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
             children: [
               if (imagePath != null) Image.file(File(imagePath!)),
               if (image == null)
-                const Text("Take a photo or choose one from the gallery to inference."),
+                const Text("写真を選んでください！！"),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -130,6 +130,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Text(ImageClassificationHelper.modelPath),
                         if (image != null) ...[
                           // Show model information
                           if (imageClassificationHelper?.inputTensor != null)
